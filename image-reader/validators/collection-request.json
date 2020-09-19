@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "CollectionRequest",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "category": {
+        "type": "string",
+        "enum": ["BOOKS", "INSTRUCTIONS", "OTHERS", "PERSONAL"]
+      },
+      "description": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "category"
+    ],
+    "additionalProperties": false
+  }
