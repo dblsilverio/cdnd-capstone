@@ -12,12 +12,12 @@ const logger: Logger = createLogger("http-updateCollection")
 
 export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> = middy(async (evt: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
-    const { id } = evt.pathParameters
+    const { collectionId } = evt.pathParameters
     const collectionRequest: CollectionRequest = JSON.parse(evt.body)
     const userId = getUserId(evt)
 
     try {
-        await updateCollection(collectionRequest, id, userId)
+        await updateCollection(collectionRequest, collectionId, userId)
 
         return {
             statusCode: 204,

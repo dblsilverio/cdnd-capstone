@@ -38,6 +38,9 @@ custom:
       - name: CollectionRequest
         contentType: application/json
         schema: ${file(validators/collection-request.json)}
+      - name: ImageRequest
+        contentType: application/json
+        schema: ${file(validators/image-request.json)}
 
 plugins:
   - serverless-webpack
@@ -73,7 +76,7 @@ functions:
     events:
       - http:
           method: get
-          path: collections/{id}
+          path: collections/{collectionId}
           cors: true
           documentation:
             summary: Fetch user image collection 
@@ -115,7 +118,7 @@ functions:
     events:
       - http:
           method: put
-          path: collections/{id}
+          path: collections/{collectionId}
           cors: true
           reqValidatorName: RequestBodyValidator
           documentation:
@@ -139,7 +142,7 @@ functions:
     events:
       - http:
           method: delete
-          path: collections/{id}
+          path: collections/{collectionId}
           cors: true
           documentation:
             summary: Delete an image collection 

@@ -13,11 +13,11 @@ const logger:Logger = createLogger("http-singleCollection")
 
 export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> = middy(async (evt: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
-    const { id } = evt.pathParameters
+    const { collectionId } = evt.pathParameters
     const userId = getUserId(evt)
 
     try {
-        const result: ImageCollection = await getUserCollection(userId, id)
+        const result: ImageCollection = await getUserCollection(userId, collectionId)
 
         return {
             statusCode: 200,

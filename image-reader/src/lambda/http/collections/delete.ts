@@ -11,11 +11,11 @@ const logger: Logger = createLogger("http-deleteCollection")
 
 export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> = middy(async (evt: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const userId = getUserId(evt)
-    const { id } = evt.pathParameters
+    const { collectionId } = evt.pathParameters
 
     try {
 
-        await deleteCollection(id, userId)
+        await deleteCollection(collectionId, userId)
 
         return {
             statusCode: 204,
