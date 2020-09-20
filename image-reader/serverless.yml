@@ -141,7 +141,6 @@ functions:
           method: delete
           path: collections/{id}
           cors: true
-          reqValidatorName: RequestBodyValidator
           documentation:
             summary: Delete an image collection 
             description: Delete an image collection for the authenticated user
