@@ -1,18 +1,16 @@
 import * as AWS from 'aws-sdk'
 
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-// import { Logger } from "winston";
+import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
 import { Image } from "../../models/image";
-// import { createLogger } from "../../utils/infra/logger";
 import { ImageRepository } from "../imageRepository";
 
 export class ImageDynamo implements ImageRepository {
 
     constructor(
-        // private readonly logger: Logger = createLogger("ImageDynamo"),
         private readonly docClient: DocumentClient = createDynamoDBClient(),
         private readonly tableName: string = process.env.IMAGES_TABLE_NAME,
-        // private readonly imagesCreatedAtCollIndexName: string = process.env.IMAGES_COLLECTION_INDEX_NAME
+        private readonly findCollectionIndexName: string = process.env.IMAGES_FIND_COLLECTION_INDEX_NAME,
+        private readonly imagesCreatedAtCollIndexName: string = process.env.IMAGES_COLLECTION_INDEX_NAME
     ) { }
 
     async create(i: Image): Promise<Image> {
@@ -26,6 +24,63 @@ export class ImageDynamo implements ImageRepository {
 
     }
 
+    async list(collectionId: string): Promise<Image[]> {
+        const result: QueryOutput = await this.docClient.query({
+            TableName: this.tableName,
+            IndexName: this.imagesCreatedAtCollIndexName,
+            KeyConditionExpression: 'collectionId = :cid',
+            ExpressionAttributeValues: {
+                ':cid': collectionId
+            }
+        }).promise()
+
+        if (result.Count !== 0) {
+            return <Image[]>(<any>result.Items)
+        }
+
+        return []
+    }
+
+    async delete(collectionId: string, id: string): Promise<void> {
+
+        await this.docClient.delete({
+            TableName: this.tableName,
+            Key: { id, collectionId }
+        }).promise()
+
+    }
+
+    async detectedText(id: string, text: string): Promise<void> {
+        const collectionId: string = await this.collection(id)
+
+        await this.docClient.update({
+            TableName: this.tableName,
+            Key: {
+                id, collectionId
+            },
+            UpdateExpression: 'set textContent = :txtContent',
+            ExpressionAttributeValues: {
+                ':txtContent': text
+            }
+        }).promise()
+    }
+
+    async collection(imageId: string): Promise<string> {
+        const result: QueryOutput = await this.docClient.query({
+            TableName: this.tableName,
+            IndexName: this.findCollectionIndexName,
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: {
+                ':id': imageId
+            }
+        }).promise()
+
+        if (result.Count === 1) {
+            return (<Image>(<any>result.Items[0])).collectionId
+        }
+
+        return null
+    }
 }
 
 function createDynamoDBClient(): DocumentClient {

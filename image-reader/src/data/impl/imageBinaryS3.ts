@@ -12,6 +12,10 @@ export class ImageBinaryS3 implements ImageBinaryRepository {
         private readonly s3Client: AWS.S3 = createS3Client()
     ) { }
 
+    getBucket(): string {
+        return this.bucketName
+    }
+
     signedUrl(imageId: string): string {
         this.logger.debug(`Generating signed url for image ${imageId}`)
 

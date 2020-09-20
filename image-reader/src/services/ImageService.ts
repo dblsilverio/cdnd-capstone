@@ -9,6 +9,7 @@ import { Image } from "../models/image";
 import { ImageRequest } from "../requests/imageRequest";
 import { CreateImageResponse } from '../response/createImageResponse';
 import { createLogger } from "../utils/infra/logger";
+import { completeImageUrl } from '../utils/infra/helpers';
 
 const logger: Logger = createLogger('svc-imageCollection')
 const repo: ImageRepository = new ImageDynamo()
@@ -19,8 +20,8 @@ const collectionRepo: ImageCollectionRepository = new ImageCollectionDynamo()
 export async function createImage(iReq: ImageRequest, collectionId: string, userId: string): Promise<CreateImageResponse> {
 
     logger.info(`User ${userId} is attempting to create/upload new image: ${iReq.title}`)
-    
-    collectionRepo.checkOwner(userId, collectionId)
+
+    await collectionRepo.checkOwner(userId, collectionId)
 
     const id: string = v4()
 
@@ -28,7 +29,7 @@ export async function createImage(iReq: ImageRequest, collectionId: string, user
         ...iReq,
         id,
         collectionId,
-        filename: id,
+        filename: completeImageUrl(id),
         createdAt: new Date().toISOString()
     }
 
@@ -37,3 +38,30 @@ export async function createImage(iReq: ImageRequest, collectionId: string, user
 
     return { image, signedUrl };
 }
+
+export async function deleteImage(imageId: string, collectionId: string, userId: string): Promise<void> {
+    logger.debug(`User ${userId} is attempting to delete image: ${imageId}`)
+    
+    await collectionRepo.checkOwner(userId, collectionId)
+
+    await repo.delete(collectionId, imageId)
+}
+
+export async function listCollectionImages(collectionId: string, userId: string): Promise<Image[]> {
+    logger.debug(`User ${userId} is listing collection: ${collectionId}`)
+
+    await collectionRepo.checkOwner(userId, collectionId)
+
+    return await repo.list(collectionId)
+}
+
+export async function putDetectedText(imageId: string, detectedText: string): Promise<void> {
+    logger.info(`Update image ${imageId} with detect text`)
+
+    await repo.detectedText(imageId, detectedText)
+}
+
+export function getBucket(): string {
+    return repoS3.getBucket()
+}
+
