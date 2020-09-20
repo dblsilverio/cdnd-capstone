@@ -17,7 +17,7 @@ export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> =
     try {
         const result: ImageCollection[] = await getUserCollections(userId)
 
-        if (!result) {
+        if (!result || result.length === 0) {
             return {
                 statusCode: 204,
                 body: ''
