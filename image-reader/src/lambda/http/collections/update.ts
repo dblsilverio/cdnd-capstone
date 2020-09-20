@@ -1,10 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
+import { cors, httpErrorHandler } from 'middy/middlewares'
 import { Logger } from 'winston'
 import { CollectionRequest } from '../../../requests/collectionRequest'
 import { updateCollection } from '../../../services/imageCollectionService'
 import { getUserId } from '../../../utils/auth/auth'
+import { handleErrors } from '../../../utils/errors/errors'
 import { createLogger } from '../../../utils/infra/logger'
 
 const logger: Logger = createLogger("http-updateCollection")
@@ -24,29 +25,9 @@ export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> =
         }
 
     } catch (e) {
-        logger.error(`Error updating collection: ${e.message}`)
-
-        switch (e.name) {
-
-            case "AuthorizationError": return {
-                statusCode: 403,
-                body: ''
-            }
-
-            case "NotFoundError": return {
-                statusCode: 404,
-                body: e.message
-            }
-
-            default: return {
-                statusCode: 500,
-                body: ''
-            }
-
-        }
-
+        return await handleErrors(e, logger)
     }
 
 })
 
-handler.use(cors({ credentials: true }))
+handler.use(cors({ credentials: true })).use(httpErrorHandler())

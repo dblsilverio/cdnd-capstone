@@ -4,8 +4,7 @@ import { ImageCollection } from "../../models/imageCollection"
 import { ImageCollectionRepository } from "../imageCollectionRepository"
 import { Logger } from 'winston'
 import { createLogger } from '../../utils/infra/logger'
-import { AuthorizationError } from '../../utils/errors/authorizationError'
-import { NotFoundError } from '../../utils/errors/notFoundError'
+import * as createHttpError from 'http-errors'
 
 export class ImageCollectionDynamo implements ImageCollectionRepository {
 
@@ -29,7 +28,7 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
 
     async get(id: string, userId: string): Promise<ImageCollection> {
 
-        this.checkOwner(userId, id)
+        await this.checkOwner(userId, id)
 
         const result: GetItemOutput = await this.docClient.get({
             TableName: this.tableName,
@@ -63,7 +62,7 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
 
     async update(i: ImageCollection, userId: string): Promise<void> {
 
-        this.checkOwner(userId, i.id);
+        await this.checkOwner(userId, i.id);
 
         await this.docClient.update({
             TableName: this.tableName,
@@ -82,7 +81,7 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
 
     async delete(id: string, userId: string): Promise<void> {
 
-        this.checkOwner(userId, id);
+        await this.checkOwner(userId, id);
 
         await this.docClient.delete({
             TableName: this.tableName,
@@ -91,8 +90,6 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
     }
 
     async checkOwner(userId: string, id: string): Promise<void> {
-
-        console.log(userId, id)
 
         const result: QueryOutput = await this.docClient.query({
             TableName: this.tableName,
@@ -103,18 +100,15 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
             }
         }).promise()
 
-        console.log(result)
-
         if (result.Count !== 0) {
             const imageCol: ImageCollection = <ImageCollection>(<any>result.Items[0])
-            console.log(imageCol)
 
             if (imageCol.userId !== userId) {
                 this.logger.warn(`User ${userId} is not owner of collection ${id}`)
-                throw new AuthorizationError(`Unauthorized operation`)
+                throw new createHttpError.Forbidden(`User ${userId} is not authorized`)
             }
         } else {
-            throw new NotFoundError(`ImageCollection#${id}`)
+            throw new createHttpError.NotFound(`Resource ImageCollection#${id} not found`)
         }
 
     }

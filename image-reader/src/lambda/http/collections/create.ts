@@ -8,6 +8,7 @@ import { ImageCollection } from "../../../models/imageCollection";
 import { CollectionRequest } from "../../../requests/collectionRequest";
 import { createImageCollection } from "../../../services/imageCollectionService";
 import { getUserId } from "../../../utils/auth/auth";
+import { handleErrors } from "../../../utils/errors/errors";
 import { createLogger } from "../../../utils/infra/logger";
 
 const logger: Logger = createLogger('http-createCollection')
@@ -30,12 +31,7 @@ export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> =
         }
 
     } catch (e) {
-        logger.error(`Error creating image collection: ${e.name}: ${e.message}`)
-
-        return {
-            statusCode: 500,
-            body: ''
-        }
+        return await handleErrors(e, logger)
     }
 
 });
