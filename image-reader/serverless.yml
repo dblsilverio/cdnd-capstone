@@ -10,9 +10,12 @@ provider:
   environment:
     COLLECTION_ID_INDEX_NAME: IXCollectionById
     COLLECTION_TABLE_NAME: Collections
+    IMAGES_BUCKET_NAME: udacity-cdnd-capstone-image-reader-${self:provider.stage}
+    IMAGES_COLLECTION_INDEX_NAME: IXImagesCreatedAtByCollection
+    IMAGES_TABLE_NAME: Images
+    SIGNED_URL_EXPIRATION: 180
     USER_INDEX_NAME: IXCollectionsCreatedByUser
 
-# you can overwrite defaults here
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
@@ -159,7 +162,30 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
-            
+           
+  createImage:
+    handler: src/lambda/http/images/create.handler
+    events:
+      - http:
+          method: post
+          path: collections/{collectionId}/images
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new image 
+            description: Create a new image for a given collection and returns a signed url for upload to the user
+            requestModels:
+              'application/json': ImageRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET_NAME}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}
+
 
 resources:
   Resources:
@@ -217,4 +243,63 @@ resources:
               NonKeyAttributes:
                 - userId
               ProjectionType: INCLUDE
-                
+
+    ImagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.IMAGES_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: collectionId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: collectionId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.IMAGES_COLLECTION_INDEX_NAME}
+            KeySchema:
+              - AttributeName: collectionId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.IMAGES_BUCKET_NAME}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+    
+    ImagesBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: BucketPolicy
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadForImagesObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET_NAME}/*'
+        Bucket: !Ref ImagesBucket
