@@ -1,6 +1,7 @@
 import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
 import { Logger } from 'winston';
 import { createDynamoDBClient } from "..";
+import { traceDuration } from "../../utils/decorators";
 import { createLogger } from '../../utils/infra/logger';
 import { WSUserRepository } from "../WSUserRepository";
 
@@ -28,6 +29,7 @@ export class WSUserDynamo implements WSUserRepository {
         }).promise()
     }
 
+    @traceDuration("Load User Active Connections")
     async activeConnections(userId: string): Promise<string[]> {
 
         const result: QueryOutput = await this.docClient.query({

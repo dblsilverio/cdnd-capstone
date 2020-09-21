@@ -15,15 +15,21 @@ provider:
     IMAGES_FIND_ID_INDEX_NAME: IXImagesFindById
     IMAGES_TABLE_NAME: Images
     IMAGES_TOPIC_NAME: imagesTopic-${self:provider.stage}
+    NAMESPACE: Udacity/ImageReader
     SIGNED_URL_EXPIRATION: 180
     USERS_CONNECTIONS_TABLE: UsersConnections
     USER_INDEX_NAME: IXCollectionsCreatedByUser
     USERS_ID_INDEX_NAME: IXWSUserIdConnection
   
+  tracing:
+    lambda: true
+    apiGateway: true
+  
   # Common to most functions
   iamRoleStatements:
     - Effect: "Allow"
       Action:
+        - "cloudwatch:PutMetricData"
         - "xray:PutTraceSegments"
         - "xray:PutTelemetryRecords"
       Resource:
@@ -65,6 +71,7 @@ plugins:
   - serverless-aws-documentation
   - serverless-reqvalidator-plugin
   - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
 
 functions:
   createImageCollection:
@@ -80,6 +87,7 @@ functions:
             description: Create a new image collection in a specified category for the authenticated user
             requestModels:
               "application/json": CollectionRequest
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -96,6 +104,7 @@ functions:
           documentation:
             summary: Fetch user image collection
             description: Fetch user image collection for the authenticated user by id
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -117,6 +126,7 @@ functions:
           documentation:
             summary: List user's image collection
             description: List user's image collection for the authenticated user
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -141,6 +151,7 @@ functions:
             description: Update an image collection for the authenticated user
             requestModels:
               "application/json": CollectionRequest
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -164,6 +175,7 @@ functions:
             description: Delete an image collection for the authenticated user
             requestModels:
               "application/json": CollectionRequest
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -188,6 +200,7 @@ functions:
             description: Create a new image for a given collection and returns a signed url for upload to the user
             requestModels:
               "application/json": ImageRequest
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -212,6 +225,7 @@ functions:
           documentation:
             summary: List images from a collection
             description: List images from a collection
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -232,6 +246,7 @@ functions:
           documentation:
             summary: Delete image
             description: Delete image from user's collection
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -258,6 +273,7 @@ functions:
                 - Ref: AWS::AccountId
                 - ${self:provider.environment.IMAGES_TOPIC_NAME}
           topicName: ${self:provider.environment.IMAGES_TOPIC_NAME}
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -287,6 +303,7 @@ functions:
     events:
       - websocket:
           route: $connect
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -299,6 +316,7 @@ functions:
     events:
       - websocket:
           route: $disconnect
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:

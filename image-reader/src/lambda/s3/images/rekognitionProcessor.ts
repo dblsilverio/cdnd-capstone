@@ -3,6 +3,7 @@ import { S3Object } from "aws-sdk/clients/rekognition";
 import { Logger } from "winston";
 import { Image } from "../../../models/image";
 import { findCollectionOwnerByImage, findImageById, getBucket, putDetectedText } from "../../../services/ImageService";
+import { putCountMetric } from "../../../services/metricService";
 import { detectText } from "../../../services/rekognitionService";
 import { userConnections } from "../../../services/usersConnectionService";
 import { notify } from "../../../services/websocketService";
@@ -33,12 +34,14 @@ async function processImage(s3Record: S3EventRecord): Promise<void> {
     }
 
     logger.info(`Running rekognition services for image ${key}`)
+
     const detectedText = await detectText(s3Object)
 
     if (detectText) {
         await putDetectedText(key, detectedText)
     } else {
         logger.warn(`Could not detect any text for image ${key}`)
+        await putCountMetric("TextDetection - Empty")
     }
 
     await sendNotification(key)
@@ -50,7 +53,13 @@ async function sendNotification(imageId: string): Promise<void> {
     const image: Image = await findImageById(imageId)
     const connectionIds: string[] = await userConnections(userId)
 
+    let sentMessages: number = 0
+
     for (const conn of connectionIds) {
-        await notify(conn, { message: `Image '${image.title}' processed` })
+        if (await notify(conn, { message: `Image '${image.title}' processed` })){
+            sentMessages++
+        }
     }
+
+    await putCountMetric("Successful Notifications", sentMessages)
 }

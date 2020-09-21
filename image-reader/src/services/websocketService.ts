@@ -13,7 +13,7 @@ const apiId = process.env.API_ID
 
 const apiGW: ApiGatewayManagementApi = createApiGatewayClient()
 
-export async function notify(connectionId: string, message: any): Promise<void> {
+export async function notify(connectionId: string, message: any): Promise<boolean> {
     const messageStr: string = JSON.stringify(message)
 
     logger.info(`Sending to userConnection ${connectionId}: ${messageStr}`)
@@ -24,15 +24,19 @@ export async function notify(connectionId: string, message: any): Promise<void> 
             Data: JSON.stringify(messageStr)
         }).promise()
 
+        return true
+
     } catch (e) {
         logger.error(`Error posting do websocket: ${JSON.stringify(e)}`)
 
-        if(e.statusCode === 410){
+        if (e.statusCode === 410) {
             logger.warn(`Stale connection ${connectionId} will be removed`)
 
             await deleteConnection(connectionId)
         }
     }
+
+    return false
 
 }
 

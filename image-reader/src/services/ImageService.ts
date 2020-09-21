@@ -21,7 +21,7 @@ export async function findImageById(imageId: string): Promise<Image> {
 }
 
 export async function createImage(iReq: ImageRequest, collectionId: string, userId: string): Promise<CreateImageResponse> {
-
+    
     logger.info(`User ${userId} is attempting to create/upload new image: ${iReq.title}`)
 
     await collectionRepo.checkOwner(userId, collectionId)

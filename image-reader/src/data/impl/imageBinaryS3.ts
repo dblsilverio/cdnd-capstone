@@ -1,6 +1,7 @@
 import * as AWS from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import { Logger } from "winston";
+import { traceCount } from '../../utils/decorators';
 import { createLogger } from "../../utils/infra/logger";
 import { ImageBinaryRepository } from "../imageBinaryRepository";
 
@@ -19,6 +20,7 @@ export class ImageBinaryS3 implements ImageBinaryRepository {
         return this.bucketName
     }
 
+    @traceCount("Generated Signed Urls")
     signedUrl(imageId: string): string {
         this.logger.debug(`Generating signed url for image ${imageId}`)
 
