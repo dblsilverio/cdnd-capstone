@@ -2,9 +2,8 @@ import { v4 } from 'uuid'
 import { ImageCollectionDynamo, ImageCollectionRepository } from '../data';
 import { Logger } from "winston";
 import { ImageBinaryRepository } from "../data/imageBinaryRepository";
-import { ImageRepository } from '../data/imageRepository';
+import { ImageRepository, ImageDynamo } from '../data';
 import { ImageBinaryS3 } from "../data/impl/imageBinaryS3";
-import { ImageDynamo } from '../data/impl/imageDynamo';
 import { Image } from "../models/image";
 import { ImageRequest } from "../requests/imageRequest";
 import { CreateImageResponse } from '../response/createImageResponse';

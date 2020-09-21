@@ -1,5 +1,4 @@
-import { WSUserDynamo } from "../data/impl/WSUserDynamo";
-import { WSUserRepository } from "../data/WSUserRepository";
+import { WSUserRepository, WSUserDynamo } from "../data";
 
 const repo: WSUserRepository = new WSUserDynamo()
 
