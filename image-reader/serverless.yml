@@ -19,6 +19,15 @@ provider:
     USERS_CONNECTIONS_TABLE: UsersConnections
     USER_INDEX_NAME: IXCollectionsCreatedByUser
     USERS_ID_INDEX_NAME: IXWSUserIdConnection
+  
+  # Common to most functions
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}

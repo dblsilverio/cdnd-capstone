@@ -1,6 +1,5 @@
-import * as AWS from 'aws-sdk'
-
 import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
+import { createDynamoDBClient } from "..";
 import { Image } from "../../models/image";
 import { ImageRepository } from "../imageRepository";
 
@@ -84,17 +83,4 @@ export class ImageDynamo implements ImageRepository {
         }).promise()
     }
 
-}
-
-function createDynamoDBClient(): DocumentClient {
-    let params = undefined
-
-    if (process.env.IS_OFFLINE) {
-        params = {
-            region: "offline",
-            endpoint: "http://localhost:8000"
-        }
-    }
-
-    return new AWS.DynamoDB.DocumentClient(params)
 }

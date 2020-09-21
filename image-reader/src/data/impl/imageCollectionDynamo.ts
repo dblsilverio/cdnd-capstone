@@ -1,10 +1,10 @@
-import * as AWS from 'aws-sdk'
 import { DocumentClient, GetItemOutput, QueryOutput } from "aws-sdk/clients/dynamodb"
 import { ImageCollection } from "../../models/imageCollection"
 import { ImageCollectionRepository } from "../imageCollectionRepository"
 import { Logger } from 'winston'
 import { createLogger } from '../../utils/infra/logger'
 import * as createHttpError from 'http-errors'
+import { createDynamoDBClient } from ".."
 
 export class ImageCollectionDynamo implements ImageCollectionRepository {
 
@@ -131,17 +131,4 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
 
     }
 
-}
-
-function createDynamoDBClient(): DocumentClient {
-    let params = undefined
-
-    if (process.env.IS_OFFLINE) {
-        params = {
-            region: "offline",
-            endpoint: "http://localhost:8000"
-        }
-    }
-
-    return new AWS.DynamoDB.DocumentClient(params)
 }

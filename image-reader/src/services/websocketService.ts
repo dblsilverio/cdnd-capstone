@@ -1,9 +1,11 @@
 import * as AWS from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 import { ApiGatewayManagementApi } from 'aws-sdk';
 import { Logger } from "winston";
 import { createLogger } from "../utils/infra/logger";
 import { deleteConnection } from './usersConnectionService';
 
+const AWSX = AWSXRay.captureAWS(AWS)
 const logger: Logger = createLogger('svc-webSocketService')
 
 const stage = process.env.STAGE
@@ -41,5 +43,5 @@ function createApiGatewayClient(): ApiGatewayManagementApi {
         endpoint: `${apiId}.execute-api.us-east-1.amazonaws.com/${stage}`
     }
 
-    return new AWS.ApiGatewayManagementApi(connectionParams)
+    return new AWSX.ApiGatewayManagementApi(connectionParams)
 }

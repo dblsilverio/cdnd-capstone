@@ -1,6 +1,6 @@
-import * as AWS from 'aws-sdk'
 import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
 import { Logger } from 'winston';
+import { createDynamoDBClient } from "..";
 import { createLogger } from '../../utils/infra/logger';
 import { WSUserRepository } from "../WSUserRepository";
 
@@ -57,17 +57,4 @@ export class WSUserDynamo implements WSUserRepository {
         }).promise()
     }
 
-}
-
-function createDynamoDBClient(): DocumentClient {
-    let params = undefined
-
-    if (process.env.IS_OFFLINE) {
-        params = {
-            region: "offline",
-            endpoint: "http://localhost:8000"
-        }
-    }
-
-    return new AWS.DynamoDB.DocumentClient(params)
 }

@@ -1,13 +1,15 @@
 import * as AWS from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 import { DetectTextRequest, DetectTextResponse, S3Object } from 'aws-sdk/clients/rekognition';
 import { Logger } from 'winston';
 import { createLogger } from '../utils/infra/logger';
 
+const AWSX = AWSXRay.captureAWS(AWS)
 const logger: Logger = createLogger("svc-rekognitionService")
 
 export async function detectText(image: S3Object): Promise<string> {
 
-    const rk = new AWS.Rekognition()
+    const rk = new AWSX.Rekognition()
 
     const detectRequest: DetectTextRequest = {
         Image: {

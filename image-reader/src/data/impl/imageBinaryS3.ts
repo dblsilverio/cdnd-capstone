@@ -1,7 +1,10 @@
 import * as AWS from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 import { Logger } from "winston";
 import { createLogger } from "../../utils/infra/logger";
 import { ImageBinaryRepository } from "../imageBinaryRepository";
+
+const AWSX = AWSXRay.captureAWS(AWS)
 
 export class ImageBinaryS3 implements ImageBinaryRepository {
 
@@ -29,5 +32,5 @@ export class ImageBinaryS3 implements ImageBinaryRepository {
 }
 
 function createS3Client(): AWS.S3 {
-    return new AWS.S3({ signatureVersion: 'v4' })
+    return new AWSX.S3({ signatureVersion: 'v4' })
 }
