@@ -12,11 +12,13 @@ provider:
     COLLECTION_TABLE_NAME: Collections
     IMAGES_BUCKET_NAME: udacity-cdnd-capstone-image-reader-${self:provider.stage}
     IMAGES_COLLECTION_INDEX_NAME: IXImagesCreatedAtByCollection
-    IMAGES_FIND_COLLECTION_INDEX_NAME: IXImagesFindCollection
+    IMAGES_FIND_ID_INDEX_NAME: IXImagesFindById
     IMAGES_TABLE_NAME: Images
     IMAGES_TOPIC_NAME: imagesTopic-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 180
+    USERS_CONNECTIONS_TABLE: UsersConnections
     USER_INDEX_NAME: IXCollectionsCreatedByUser
+    USERS_ID_INDEX_NAME: IXWSUserIdConnection
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
@@ -232,6 +234,10 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}
 
   rekognitionProcessor:
+    environment:
+      STAGE: ${self:provider.stage}
+      API_ID:
+        Ref: WebsocketsApi
     handler: src/lambda/s3/images/rekognitionProcessor.handler
     events:
       - sns:
@@ -247,15 +253,48 @@ functions:
       - Effect: Allow
         Action:
           - rekognition:DetectText
+          - execute-api:ManageConnections
         Resource: "*"
       - Effect: Allow
         Action:
+          - dynamodb:Query
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}/index/${self:provider.environment.IMAGES_FIND_COLLECTION_INDEX_NAME}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}/index/${self:provider.environment.IMAGES_FIND_ID_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_CONNECTIONS_TABLE}/index/${self:provider.environment.USERS_ID_INDEX_NAME}
+
+  ConnectHandler:
+    handler: src/lambda/ws/connect.handler
+    events:
+      - websocket:
+          route: $connect
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_CONNECTIONS_TABLE}
+
+
+  DisconnectHandler:
+    handler: src/lambda/ws/disconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_CONNECTIONS_TABLE}
 
 resources:
   Resources:
@@ -340,14 +379,33 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-          - IndexName: ${self:provider.environment.IMAGES_FIND_COLLECTION_INDEX_NAME}
+          - IndexName: ${self:provider.environment.IMAGES_FIND_ID_INDEX_NAME}
             KeySchema:
               - AttributeName: id
                 KeyType: HASH
             Projection:
-              NonKeyAttributes:
-                - collectionId
-              ProjectionType: INCLUDE
+              ProjectionType: ALL
+
+    WSUsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.USERS_CONNECTIONS_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.USERS_ID_INDEX_NAME}
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
 
     ImagesBucket:
       Type: AWS::S3::Bucket

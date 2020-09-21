@@ -8,4 +8,5 @@ export interface ImageCollectionRepository {
     delete(id: string, userId: string): Promise<void>
 
     checkOwner(userId: string, collectionId: string): Promise<void>
+    getOwner(id: string): Promise<string>
 }

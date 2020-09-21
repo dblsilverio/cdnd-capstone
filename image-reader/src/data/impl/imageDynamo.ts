@@ -9,7 +9,7 @@ export class ImageDynamo implements ImageRepository {
     constructor(
         private readonly docClient: DocumentClient = createDynamoDBClient(),
         private readonly tableName: string = process.env.IMAGES_TABLE_NAME,
-        private readonly findCollectionIndexName: string = process.env.IMAGES_FIND_COLLECTION_INDEX_NAME,
+        private readonly findImageByIdIndexName: string = process.env.IMAGES_FIND_ID_INDEX_NAME,
         private readonly imagesCreatedAtCollIndexName: string = process.env.IMAGES_COLLECTION_INDEX_NAME
     ) { }
 
@@ -21,6 +21,25 @@ export class ImageDynamo implements ImageRepository {
         }).promise()
 
         return i
+
+    }
+
+    async get(imageId: string): Promise<Image> {
+
+        const result: QueryOutput = await this.docClient.query({
+            TableName: this.tableName,
+            IndexName: this.findImageByIdIndexName,
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: {
+                ':id': imageId
+            }
+        }).promise()
+
+        if (result.Count === 1) {
+            return <Image>(<any>result.Items[0])
+        }
+
+        return null
 
     }
 
@@ -51,7 +70,7 @@ export class ImageDynamo implements ImageRepository {
     }
 
     async detectedText(id: string, text: string): Promise<void> {
-        const collectionId: string = await this.collection(id)
+        const collectionId: string = (await this.get(id)).collectionId
 
         await this.docClient.update({
             TableName: this.tableName,
@@ -65,22 +84,6 @@ export class ImageDynamo implements ImageRepository {
         }).promise()
     }
 
-    async collection(imageId: string): Promise<string> {
-        const result: QueryOutput = await this.docClient.query({
-            TableName: this.tableName,
-            IndexName: this.findCollectionIndexName,
-            KeyConditionExpression: 'id = :id',
-            ExpressionAttributeValues: {
-                ':id': imageId
-            }
-        }).promise()
-
-        if (result.Count === 1) {
-            return (<Image>(<any>result.Items[0])).collectionId
-        }
-
-        return null
-    }
 }
 
 function createDynamoDBClient(): DocumentClient {

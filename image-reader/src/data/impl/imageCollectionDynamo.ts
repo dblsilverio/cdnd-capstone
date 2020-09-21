@@ -79,26 +79,20 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
         }).promise()
     }
 
-    async delete(id: string, userId: string): Promise<void> {
+    async getOwner(id: string): Promise<string> {
 
-        await this.checkOwner(userId, id);
+        const result: QueryOutput = await this.queryCollection(id)
 
-        await this.docClient.delete({
-            TableName: this.tableName,
-            Key: { id, userId }
-        }).promise()
+        if (result.Count === 1) {
+            return (<any>result.Items[0]).userId
+        }
+
+        return null
     }
 
     async checkOwner(userId: string, id: string): Promise<void> {
 
-        const result: QueryOutput = await this.docClient.query({
-            TableName: this.tableName,
-            IndexName: this.collectionIdIndexName,
-            KeyConditionExpression: 'id = :id',
-            ExpressionAttributeValues: {
-                ':id': id
-            }
-        }).promise()
+        const result: QueryOutput = await this.queryCollection(id)
 
         if (result.Count !== 0) {
             const imageCol: ImageCollection = <ImageCollection>(<any>result.Items[0])
@@ -110,6 +104,30 @@ export class ImageCollectionDynamo implements ImageCollectionRepository {
         } else {
             throw new createHttpError.NotFound(`Resource ImageCollection#${id} not found`)
         }
+
+    }
+
+    async delete(id: string, userId: string): Promise<void> {
+
+        await this.checkOwner(userId, id);
+
+        await this.docClient.delete({
+            TableName: this.tableName,
+            Key: { id, userId }
+        }).promise()
+
+    }
+
+    private async queryCollection(id: string): Promise<QueryOutput> {
+
+        return await this.docClient.query({
+            TableName: this.tableName,
+            IndexName: this.collectionIdIndexName,
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: {
+                ':id': id
+            }
+        }).promise()
 
     }
 
