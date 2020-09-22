@@ -51,6 +51,16 @@ export async function getImagesFromCollection(collectionId: string, token: strin
     return [];
 }
 
+export async function deleteImage(collectionId: string, imageId: string, token: string): Promise<void> {
+    const result: AxiosResponse = await Axios.delete(`${apiEndpoint}/collections/${collectionId}/images/${imageId}`, {
+        headers: await _headers(token)
+    })
+
+    if (result.status !== 204) {
+        alert(`Error deleting collection: ${result.statusText}`)
+    }
+}
+
 function _headers(token: string) {
     return {
         'Content-Type': 'application/json',

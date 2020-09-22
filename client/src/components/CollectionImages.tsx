@@ -1,6 +1,6 @@
-import React, { Component, useEffect, useState } from 'react'
-import { Col, Container, Image, Row } from 'react-bootstrap'
-import { getCollection, getImagesFromCollection } from '../clients/apiClient';
+import React, { useEffect, useState } from 'react'
+import { Button, Col, Container, Image, Row } from 'react-bootstrap'
+import { deleteImage, getCollection, getImagesFromCollection } from '../clients/apiClient';
 import { Image as CImage } from '../models/image'
 import { ImageCollection } from '../models/imageCollection'
 import Auth from '../utils/auth';
@@ -30,7 +30,30 @@ export function CollectionImages({ match }: any) {
             {
                 <Container style={{ marginTop: '50px' }}>
                     {
-                        images.map(i => (<ImageItem key={i.id} item={i} />))
+                        images.map(item =>
+                            (
+                                <Row style={{ marginBottom: '25px' }} key={item.id}>
+                                    <Col md="5">
+                                        <Image src={item.filename} fluid thumbnail />
+                                    </Col>
+                                    <Col md="7">
+                                        <div>
+                                            <p><b>Title: </b>{item.title}</p>
+                                            <p><b>Created: </b>{item.createdAt}</p>
+                                            <p><b>Description: </b>{item.description}</p>
+                                            <p><b>Detected Text: </b>{item.textContent}</p>
+                                            <div style={{ textAlign: 'center' }}>
+                                                <small>
+                                                    <Button variant="warning" size="sm">O</Button>
+                                                    <Button variant="danger" size="sm" onClick={async () => { if (await delImage(collection as ImageCollection, item)) setImages(images.filter(ii => ii.id !== item.id)) }}>X</Button>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </Col>
+
+                                </Row>
+                            )
+                        )
                     }
                 </Container>
             }
@@ -40,31 +63,14 @@ export function CollectionImages({ match }: any) {
 
 }
 
-type ImageProps = {
-    item: CImage
-}
+async function delImage(collection: ImageCollection, image: CImage): Promise<boolean> {
+    const confirm: boolean = window.confirm(`Confirm deleting image '${image.title}'?`)
 
-class ImageItem extends Component<ImageProps> {
+    if (confirm) {
+        await deleteImage(collection.id, image.id, new Auth().getToken())
 
-    render() {
-
-        const { item } = this.props
-
-        return (
-            <Row style={{ marginBottom: '25px' }}>
-                <Col md="5">
-                    <Image src={item.filename} fluid thumbnail />
-                </Col>
-                <Col md="7">
-                    <div>
-                        <p><b>Title: </b>{item.title}</p>
-                        <p><b>Created: </b>{item.createdAt}</p>
-                        <p><b>Description: </b>{item.description}</p>
-                        <p><b>Detected Text: </b>{item.textContent}</p>
-                    </div>
-                </Col>
-
-            </Row>
-        )
+        return true
     }
+
+    return false
 }

@@ -25,7 +25,7 @@ export function Collections() {
                 <Row>
                     {
                         collections.map(c => (
-                            <Col md="4" xs="12">
+                            <Col md="4" xs="12" key={c.id}>
                                 <Card style={{ width: '18rem' }}>
                                     <Card.Body>
                                         <Card.Title>

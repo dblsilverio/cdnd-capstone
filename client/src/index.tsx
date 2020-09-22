@@ -4,8 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 
 import { Auth0Provider } from "@auth0/auth0-react";
-
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer } from 'react-toastify';
 import Footer from './ui/Footer';
 import Header from './ui/Header';
 import { Container, Jumbotron } from 'react-bootstrap';
@@ -15,6 +14,9 @@ import PrivateRoute from './components/PrivateRoute';
 import Main from './components/Main';
 import { Collections } from './components/Collections';
 import { CollectionImages } from './components/CollectionImages';
+
+import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const { callbackUrl, clientId, domain } = authConfig
 
@@ -34,6 +36,7 @@ ReactDOM.render(
         </Container>
       </BrowserRouter>
     </Auth0Provider>
+    <ToastContainer />
     <Footer />
   </React.StrictMode>,
   document.getElementById('root')
