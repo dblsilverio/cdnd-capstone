@@ -74,6 +74,11 @@ plugins:
   - serverless-plugin-tracing
 
 functions:
+  Auth0:
+    environment:
+      JWKS_URL: https://dev-hkcdhb4r.us.auth0.com/.well-known/jwks.json
+    handler: src/lambda/auth/auth0Authorizer.handler
+
   createImageCollection:
     handler: src/lambda/http/collections/create.handler
     events:
@@ -81,6 +86,7 @@ functions:
           method: post
           path: collections
           cors: true
+          authorizer: Auth0
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Creates a new image collection
@@ -101,6 +107,7 @@ functions:
           method: get
           path: collections/{collectionId}
           cors: true
+          authorizer: Auth0
           documentation:
             summary: Fetch user image collection
             description: Fetch user image collection for the authenticated user by id
@@ -123,6 +130,7 @@ functions:
           method: get
           path: collections
           cors: true
+          authorizer: Auth0
           documentation:
             summary: List user's image collection
             description: List user's image collection for the authenticated user
@@ -145,6 +153,7 @@ functions:
           method: put
           path: collections/{collectionId}
           cors: true
+          authorizer: Auth0
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Update an image collection
@@ -170,6 +179,7 @@ functions:
           method: delete
           path: collections/{collectionId}
           cors: true
+          authorizer: Auth0
           documentation:
             summary: Delete an image collection
             description: Delete an image collection for the authenticated user
@@ -194,6 +204,7 @@ functions:
           method: post
           path: collections/{collectionId}/images
           cors: true
+          authorizer: Auth0
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Create a new image
@@ -222,6 +233,7 @@ functions:
           method: get
           path: collections/{collectionId}/images
           cors: true
+          authorizer: Auth0
           documentation:
             summary: List images from a collection
             description: List images from a collection
@@ -243,6 +255,7 @@ functions:
           method: delete
           path: collections/{collectionId}/images/{imageId}
           cors: true
+          authorizer: Auth0
           documentation:
             summary: Delete image
             description: Delete image from user's collection
