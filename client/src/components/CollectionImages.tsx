@@ -1,35 +1,42 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { Col, Container, Image, Row } from 'react-bootstrap'
+import { getCollection, getImagesFromCollection } from '../clients/apiClient';
 import { Image as CImage } from '../models/image'
 import { ImageCollection } from '../models/imageCollection'
+import Auth from '../utils/auth';
 
-export default class CollectionImages extends Component {
+export function CollectionImages({ match }: any) {
+    const { params } = match
+    const collectionId = params.collectionId
+    const [images, setImages] = useState<CImage[]>([]);
+    const [collection, setCollection] = useState<ImageCollection | null>(null)
 
-    collection: ImageCollection = { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1", userId: "123123", description: "Collection description" }
-    images: CImage[] = [
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "1", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "2", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "3", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "4", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "5", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "6", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" }
-    ]
+    useEffect(() => {
+        const getImages = async () => {
+            const token: string = new Auth().getToken()
 
-    render() {
-        return (
-            <>
-                <h1 style={{ textAlign: 'center' }}> <i>{this.collection.name}</i> Images </h1>
-                {
-                    <Container style={{ marginTop: '50px' }}>
-                        {
-                            this.images.map(i => (<ImageItem key={i.id} item={i} />))
-                        }
-                    </Container>
-                }
-            </>
-        )
+            const ims = await getImagesFromCollection(collectionId, token);
+            const collection = await getCollection(collectionId, token)
+            setImages(ims)
+            setCollection(collection)
+        }
 
-    }
+        getImages()
+    }, [collectionId])
+
+    return (
+        <>
+            <h1 style={{ textAlign: 'center' }}> <i>{collection ? collection.name : 'N/A'}</i> Images </h1>
+            {
+                <Container style={{ marginTop: '50px' }}>
+                    {
+                        images.map(i => (<ImageItem key={i.id} item={i} />))
+                    }
+                </Container>
+            }
+        </>
+    )
+
 
 }
 

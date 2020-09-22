@@ -9,12 +9,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from './ui/Footer';
 import Header from './ui/Header';
 import { Container, Jumbotron } from 'react-bootstrap';
-import Collections from './components/Collections';
-import CollectionImages from './components/CollectionImages';
 
 import { authConfig } from './config/config'
 import PrivateRoute from './components/PrivateRoute';
 import Main from './components/Main';
+import { Collections } from './components/Collections';
+import { CollectionImages } from './components/CollectionImages';
 
 const { callbackUrl, clientId, domain } = authConfig
 

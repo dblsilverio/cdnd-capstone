@@ -1,14 +1,20 @@
 import React from "react";
 import { IdToken, useAuth0 } from "@auth0/auth0-react";
 import { Image } from "react-bootstrap";
+import Auth from "../utils/auth";
 
 /**
  * Base on Auth0 docs for React Integration
  */
 const Profile = () => {
     const { user, isAuthenticated } = useAuth0()
+    const auth = new Auth()
 
-    console.log(BearerToken().then(token => console.log(token)))
+    if (isAuthenticated) {
+        BearerToken().then(token => auth.setToken(token))
+    } else {
+        auth.removeToken()
+    }
 
     return (
         <>
@@ -24,6 +30,7 @@ const Profile = () => {
 
 }
 
+
 export async function BearerToken(): Promise<string> {
     const { getIdTokenClaims } = useAuth0()
     const idToken: IdToken = await getIdTokenClaims()
@@ -37,6 +44,7 @@ export async function BearerToken(): Promise<string> {
     }
 
     return ""
+
 }
 
 
