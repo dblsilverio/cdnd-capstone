@@ -6,12 +6,12 @@ import { ImageCollection } from '../models/imageCollection'
 export default class Collections extends Component {
 
     items: ImageCollection[] = [
-        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" },
-        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" },
-        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" },
-        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" },
-        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" },
-        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" }
+        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1", userId: "123123", description: "Collection description" },
+        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "2", userId: "123123", description: "Collection description" },
+        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "3", userId: "123123", description: "Collection description" },
+        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "4", userId: "123123", description: "Collection description" },
+        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "5", userId: "123123", description: "Collection description" },
+        { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "6", userId: "123123", description: "Collection description" }
     ]
 
     render() {
@@ -21,7 +21,7 @@ export default class Collections extends Component {
                 <Container>
                     <Row>
                         {
-                            this.items.map(c => (<CollectionItem item={c} />))
+                            this.items.map(c => (<CollectionItem key={c.id} item={c} />))
                         }
                     </Row>
                 </Container>

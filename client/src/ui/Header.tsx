@@ -1,10 +1,13 @@
 import React from 'react';
 import { Button, Image, Nav, Navbar } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react'
 
 import logo from '../img/logo.png';
+import Profile from '../components/Profile';
 
 function Header() {
+
     return (
         <Navbar bg="light" expand="lg">
 
@@ -18,9 +21,22 @@ function Header() {
                 </Nav>
 
             </Navbar.Collapse>
-            <Button variant="info" as={Link} to="/login">Login</Button>
+            <Profile />
+            <SessionButton />
         </Navbar>
     )
 }
+
+function SessionButton() {
+
+    const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+
+    if (isAuthenticated) {
+        return (<><Button variant="danger" onClick={() => logout()}>Logout</Button></>)
+    }
+
+    return (<><Button variant="primary" onClick={() => loginWithRedirect()}>Login</Button></>)
+}
+
 
 export default Header;

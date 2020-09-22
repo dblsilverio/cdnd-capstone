@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 
+import { Auth0Provider } from "@auth0/auth0-react";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from './ui/Footer';
 import Header from './ui/Header';
@@ -10,32 +12,28 @@ import { Container, Jumbotron } from 'react-bootstrap';
 import Collections from './components/Collections';
 import CollectionImages from './components/CollectionImages';
 
+import { authConfig } from './config/config'
+import PrivateRoute from './components/PrivateRoute';
+import Main from './components/Main';
+
+const { callbackUrl, clientId, domain } = authConfig
+
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Header />
-      <Container>
-        <Jumbotron>
-          <Switch>
-            <Route exact path="/">
-              <Collections />
-            </Route>
-            <Route exact path="/login">
-              Login
-</Route>
-            <Route exact path="/logoff">
-              Logoff
-</Route>
-            <Route exact path="/callback">
-              Callback
-</Route>
-            <Route exact path="/collections/:collectionId">
-              <CollectionImages />
-            </Route>
-          </Switch>
-        </Jumbotron>
-      </Container>
-    </BrowserRouter>
+    <Auth0Provider clientId={clientId} redirectUri={callbackUrl} domain={domain}>
+      <BrowserRouter>
+        <Header />
+        <Container>
+          <Jumbotron>
+            <Switch>
+              <Route exact path="/" component={Main} />
+              <PrivateRoute exact path="/collections/" component={Collections} />
+              <PrivateRoute exact path="/collections/:collectionId" component={CollectionImages} />
+            </Switch>
+          </Jumbotron>
+        </Container>
+      </BrowserRouter>
+    </Auth0Provider>
     <Footer />
   </React.StrictMode>,
   document.getElementById('root')

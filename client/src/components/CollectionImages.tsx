@@ -5,14 +5,14 @@ import { ImageCollection } from '../models/imageCollection'
 
 export default class CollectionImages extends Component {
 
-    collection: ImageCollection = { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1231231", userId: "123123", description: "Collection description" }
+    collection: ImageCollection = { category: "Category name", name: "Collection name", createdAt: new Date().toISOString(), id: "1", userId: "123123", description: "Collection description" }
     images: CImage[] = [
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "123", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "123", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "123", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "123", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "123", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
-        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "123", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" }
+        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "1", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
+        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "2", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
+        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "3", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
+        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "4", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
+        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "5", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" },
+        { collectionId: this.collection.id, filename: "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/7293f85e-53e6-463d-8e81-7a325168cc7a", id: "6", createdAt: new Date().toISOString(), title: "Public Sign 1", description: "A public sign bla bla bla", textContent: "Detect Text" }
     ]
 
     render() {
@@ -22,7 +22,7 @@ export default class CollectionImages extends Component {
                 {
                     <Container style={{ marginTop: '50px' }}>
                         {
-                            this.images.map(i => (<ImageItem item={i} />))
+                            this.images.map(i => (<ImageItem key={i.id} item={i} />))
                         }
                     </Container>
                 }
@@ -46,7 +46,7 @@ class ImageItem extends Component<ImageProps> {
         return (
             <Row style={{ marginBottom: '25px' }}>
                 <Col md="5">
-                    <Image src={item.filename} fluid />
+                    <Image src={item.filename} fluid thumbnail />
                 </Col>
                 <Col md="7">
                     <div>
