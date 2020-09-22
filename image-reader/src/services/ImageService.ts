@@ -48,6 +48,7 @@ export async function deleteImage(imageId: string, collectionId: string, userId:
     await collectionRepo.checkOwner(userId, collectionId)
 
     await repo.delete(collectionId, imageId)
+    repoS3.deleteImage(imageId)
 }
 
 export async function listCollectionImages(collectionId: string, userId: string): Promise<Image[]> {

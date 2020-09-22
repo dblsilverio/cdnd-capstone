@@ -4,6 +4,8 @@ import { CollectionRequest } from '../requests/collectionRequest'
 import { ImageCollectionDynamo, ImageCollectionRepository } from '../data'
 import { Logger } from 'winston'
 import { createLogger } from '../utils/infra/logger'
+import { deleteImage, listCollectionImages } from './ImageService'
+import { Image } from '../models/image'
 
 const logger: Logger = createLogger('svc-imageCollection')
 const repo: ImageCollectionRepository = new ImageCollectionDynamo();
@@ -44,5 +46,9 @@ export async function updateCollection(cReq: CollectionRequest, id: string, user
 export async function deleteCollection(id: string, userId: string): Promise<void> {
     logger.info(`User ${userId} attempting to delete Collection id ${id}`)
 
+    const images: Image[] = await listCollectionImages(id, userId)
+    
+    images.forEach(async (i) => await deleteImage(i.id, id, userId))
     await repo.delete(id, userId);
+
 }

@@ -31,6 +31,15 @@ export class ImageBinaryS3 implements ImageBinaryRepository {
         })
     }
 
+    @traceCount("Deleting Image from S3")
+    deleteImage(imageId: string) {
+        this.logger.debug(`Deleting image binary for image ${imageId}`)
+        this.s3Client.deleteObject({
+            Bucket: this.bucketName,
+            Key: imageId
+        })
+    }
+
 }
 
 function createS3Client(): AWS.S3 {
