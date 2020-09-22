@@ -14,14 +14,13 @@ const apiId = process.env.API_ID
 const apiGW: ApiGatewayManagementApi = createApiGatewayClient()
 
 export async function notify(connectionId: string, message: any): Promise<boolean> {
-    const messageStr: string = JSON.stringify(message)
 
-    logger.info(`Sending to userConnection ${connectionId}: ${messageStr}`)
+    logger.info(`Sending to userConnection ${connectionId}: ${JSON.stringify(message)}`)
 
     try {
         await apiGW.postToConnection({
             ConnectionId: connectionId,
-            Data: JSON.stringify(messageStr)
+            Data: JSON.stringify(message)
         }).promise()
 
         return true
