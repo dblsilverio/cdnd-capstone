@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Container, Image, Row } from 'react-bootstrap'
+import { Button, Col, Container, Image, Row, Spinner } from 'react-bootstrap'
 import { deleteImage, getCollection, getImagesFromCollection } from '../clients/apiClient';
 import { Image as CImage } from '../models/image'
 import { ImageCollection } from '../models/imageCollection'
 import Auth from '../utils/auth';
+import { FaPen, FaTrash, FaPlus, FaFileUpload } from 'react-icons/fa';
 
 export function CollectionImages({ match }: any) {
     const { params } = match
     const collectionId = params.collectionId
     const [images, setImages] = useState<CImage[]>([]);
     const [collection, setCollection] = useState<ImageCollection | null>(null)
+
+    const [image, setImage] = useState<CImage | null>(null)
 
     useEffect(() => {
         const getImages = async () => {
@@ -26,7 +29,11 @@ export function CollectionImages({ match }: any) {
 
     return (
         <>
-            <h1 style={{ textAlign: 'center' }}> <i>{collection ? collection.name : 'N/A'}</i> Images </h1>
+            {collection ?
+                (<h1 style={{ textAlign: 'center' }}> <i>{collection.name} Images</i> <Button variant="info" size="sm"><FaPlus /></Button></h1>)
+                :
+                (<div style={{ textAlign: 'center' }}><Spinner animation="grow" variant="success" /></div>)
+            }
             {
                 <Container style={{ marginTop: '50px' }}>
                     {
@@ -44,8 +51,9 @@ export function CollectionImages({ match }: any) {
                                             <p><b>Detected Text: </b>{item.textContent}</p>
                                             <div style={{ textAlign: 'center' }}>
                                                 <small>
-                                                    <Button variant="warning" size="sm">O</Button>
-                                                    <Button variant="danger" size="sm" onClick={async () => { if (await delImage(collection as ImageCollection, item)) setImages(images.filter(ii => ii.id !== item.id)) }}>X</Button>
+                                                    <Button variant="primary" size="sm"><FaFileUpload /></Button>&nbsp;
+                                                    <Button variant="warning" size="sm"><FaPen /></Button>&nbsp;
+                                                    <Button variant="danger" size="sm" onClick={async () => { if (await delImage(collection as ImageCollection, item)) setImages(images.filter(ii => ii.id !== item.id)) }}><FaTrash /></Button>
                                                 </small>
                                             </div>
                                         </div>
