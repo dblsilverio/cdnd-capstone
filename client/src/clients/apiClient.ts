@@ -3,6 +3,7 @@ import { Image } from "../models/image";
 import { ImageCollection } from "../models/imageCollection";
 
 import { apiEndpoint } from '../config/config'
+import { CollectionRequest } from "../models/collectionRequest";
 
 export async function getCollection(collectionId: string, token: string): Promise<ImageCollection | null> {
     const result: AxiosResponse = await Axios.get(`${apiEndpoint}/collections/${collectionId}`, {
@@ -14,6 +15,30 @@ export async function getCollection(collectionId: string, token: string): Promis
     }
 
     return null;
+}
+
+export async function createCollection(collection: CollectionRequest, token: string): Promise<boolean> {
+    const result: AxiosResponse = await Axios.post(`${apiEndpoint}/collections`, collection, {
+        headers: await _headers(token)
+    })
+
+    if (result.status === 201) {
+        return true
+    }
+
+    return false;
+}
+
+export async function updateCollection(collectionId: string, collection: CollectionRequest, token: string): Promise<boolean> {
+    const result: AxiosResponse = await Axios.put(`${apiEndpoint}/collections/${collectionId}`, collection, {
+        headers: await _headers(token)
+    })
+
+    if (result.status === 204) {
+        return true
+    }
+
+    return false;
 }
 
 export async function getCollections(token: string): Promise<ImageCollection[]> {

@@ -13,9 +13,7 @@ const Profile = () => {
 
     if (isAuthenticated) {
         BearerToken().then(tokenInfo => auth.setTokenInfo(tokenInfo?.token as string, tokenInfo?.userId as string))
-    } else {
-        auth.removeToken()
-    }
+     }
 
     return (
         <>
