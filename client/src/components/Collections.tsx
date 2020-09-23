@@ -17,7 +17,7 @@ export class Collections extends Component<any> {
         newCollection: true,
         collection: {
             name: '',
-            category: '',
+            category: 'BOOKS',
             description: ''
         }
     }
@@ -49,7 +49,6 @@ export class Collections extends Component<any> {
             this.setState({
                 ...this.state,
                 editing: true,
-                collection,
                 newCollection: true
             })
         }else {
@@ -59,7 +58,7 @@ export class Collections extends Component<any> {
                 newCollection: true,
                 collection: {
                     name: '',
-                    category: '',
+                    category: 'BOOKS',
                     description: ''
                 }
             })
