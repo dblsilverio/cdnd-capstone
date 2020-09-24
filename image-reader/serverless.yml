@@ -6,6 +6,7 @@ package:
 provider:
   name: aws
   runtime: nodejs12.x
+  memorySize: 256
 
   environment:
     COLLECTION_ID_INDEX_NAME: IXCollectionById
@@ -327,6 +328,7 @@ functions:
       API_ID:
         Ref: WebsocketsApi
     handler: src/lambda/s3/images/rekognitionProcessor.handler
+    timeout: 10
     events:
       - sns:
           arn:
