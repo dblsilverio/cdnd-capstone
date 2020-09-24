@@ -189,7 +189,7 @@ export class Collections extends Component<{}, CollectionsState> {
                                         <option value="BOOKS">Books</option>
                                         <option value="INSTRUCTIONS">Instructions</option>
                                         <option value="PERSONAL">Personal</option>
-                                        <option value="OTHER">Other</option>
+                                        <option value="OTHERS">Other</option>
                                     </select>
                                 </div>
                             </div>

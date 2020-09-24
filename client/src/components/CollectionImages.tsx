@@ -75,7 +75,15 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
             this.setState({
                 ...this.state,
                 editing: false,
-                newImage: true
+                newImage: true,
+                image: {
+                    id: '',
+                    title: '',
+                    filename: '',
+                    createdAt: '',
+                    description: '',
+                    collectionId: ''
+                }
             })
         }
     }
@@ -200,7 +208,15 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
         await this._loadImages()
         this.setState({
             ...this.state,
-            persisting: false
+            persisting: false,
+            image: {
+                id: '',
+                title: '',
+                filename: '',
+                createdAt: '',
+                description: '',
+                collectionId: ''
+            }
         })
         this._create(null)
 
