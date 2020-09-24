@@ -1,5 +1,5 @@
-const apiId = 'rmst5putm1'
-const wsId = 'wa4z5wk3wf'
+const apiId = 'scos6mw8pc'
+const wsId = 'i34hbxq2k9'
 
 export const apiEndpoint = `https://${apiId}.execute-api.us-east-1.amazonaws.com/dev`
 export const wsEndpoint = `wss://${wsId}.execute-api.us-east-1.amazonaws.com/dev`
