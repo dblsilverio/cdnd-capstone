@@ -3,19 +3,21 @@ import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from 'react-b
 import { Link } from 'react-router-dom'
 import { deleteCollection, getCollections, updateCollection, createCollection } from '../clients/apiClient'
 import { ImageCollection } from '../models/imageCollection'
-import Auth from '../utils/auth'
 import { FaPen, FaTrash, FaPlus } from 'react-icons/fa';
 import { CollectionRequest } from '../models/collectionRequest'
 import { toast } from 'react-toastify'
+import { CollectionsState } from '../types/states'
+import { getToken } from '../utils/auth'
 
-export class Collections extends Component<any> {
+export class Collections extends Component<CollectionsState> {
 
-    state: any = {
+    state = {
         collections: [],
         loading: true,
         editing: false,
         newCollection: true,
         collection: {
+            id: '',
             name: '',
             category: 'BOOKS',
             description: ''
@@ -23,7 +25,7 @@ export class Collections extends Component<any> {
     }
 
     async _loadCollections() {
-        const collections = await getCollections(new Auth().getToken());
+        const collections = await getCollections(getToken());
 
         this.setState({
             ...this.state,
@@ -81,7 +83,7 @@ export class Collections extends Component<any> {
         const confirm: boolean = window.confirm(`Confirm deleting collection '${collection.name}'?`)
 
         if (confirm) {
-            if (await deleteCollection(collection.id, new Auth().getToken())) {
+            if (await deleteCollection(collection.id, getToken())) {
                 await this._loadCollections()
                 toast.success(`Collection deleted`)
             } else {
@@ -94,7 +96,7 @@ export class Collections extends Component<any> {
     async _save() {
         const { id, name, category, description } = this.state.collection
         const cReq: CollectionRequest = { name, category, description }
-        const token: string = new Auth().getToken()
+        const token: string = getToken()
 
         let result: boolean = false
         if (id) {

@@ -1,8 +1,10 @@
 import React from 'react'
 import { toast } from 'react-toastify';
 import { wsEndpoint } from '../config/config'
+import { WSImageProcessorProps } from '../types/states';
+import { WSPayload } from '../types/states'
 
-const WSImageProcessor = (props: any) => {
+const WSImageProcessor = (props: WSImageProcessorProps) => {
     const { userId } = props
 
     const sock: WebSocket = new WebSocket(`${wsEndpoint}?userId=${encodeURI(userId)}`)
@@ -13,10 +15,6 @@ const WSImageProcessor = (props: any) => {
     }
 
     return (<></>)
-}
-
-interface WSPayload {
-    message: string
 }
 
 export default WSImageProcessor

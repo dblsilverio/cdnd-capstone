@@ -1,31 +1,43 @@
-import React, { Component } from 'react'
+import React, { ChangeEvent, Component } from 'react'
 import { Button, Col, Container, Form, Image, Modal, Row, Spinner } from 'react-bootstrap'
 import { createImage, deleteImage, getCollection, getImagesFromCollection, updateImage, uploadFile } from '../clients/apiClient';
 import { Image as CImage } from '../models/image'
 import { ImageCollection } from '../models/imageCollection'
-import Auth from '../utils/auth';
 import { FaPen, FaTrash, FaPlus, FaFileUpload } from 'react-icons/fa';
 import { ImageRequest } from '../models/imageRequest';
 import { toast } from 'react-toastify';
+import { CollectionsImagesProps, CollectionsImagesState } from '../types/states';
+import { getToken } from '../utils/auth';
 
-export class CollectionImages extends Component<any> {
-    state: any = {
+export class CollectionImages extends Component<CollectionsImagesProps, CollectionsImagesState> {
+    state = {
         images: [],
         image: {
+            id: '',
             title: '',
-            description: ''
+            filename: '',
+            createdAt: '',
+            description: '',
+            collectionId: ''
         },
-        collection: {},
+        collection: {
+            id: 'string',
+            name: '',
+            description: '',
+            category: '',
+            createdAt: '',
+            userId: ''
+        },
         editing: false,
         newImage: true,
         loading: true,
         upload: false,
         uploading: false,
-        file: []
+        file: null
     }
 
     async _loadImages() {
-        const token: string = new Auth().getToken()
+        const token: string = getToken()
         const { collectionId } = this.props.match.params
 
         const images = await getImagesFromCollection(collectionId, token);
@@ -103,7 +115,7 @@ export class CollectionImages extends Component<any> {
 
         try {
 
-            await uploadFile(id, collectionId, this.state.file, new Auth().getToken())
+            await uploadFile(id, collectionId, (this.state.file as any) as Buffer, getToken())
             toast.success(`File uploaded`)
 
         } catch (e) {
@@ -120,7 +132,7 @@ export class CollectionImages extends Component<any> {
         const confirm: boolean = window.confirm(`Confirm deleting image '${image.title}'?`)
 
         if (confirm) {
-            if (await deleteImage(collection.id, image.id, new Auth().getToken())) {
+            if (await deleteImage(collection.id, image.id, getToken())) {
                 this.setState({
                     images: this.state.images.filter((ii: CImage) => ii.id !== image.id)
                 })
@@ -133,7 +145,7 @@ export class CollectionImages extends Component<any> {
 
     }
 
-    _updateState(evt: any) {
+    _updateState(evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const { name, value } = evt.target
         const { image } = this.state
 
@@ -150,13 +162,13 @@ export class CollectionImages extends Component<any> {
      * 
      * @param evt
      */
-    _updateFile(evt: any) {
+    async _updateFile(evt: ChangeEvent<HTMLInputElement>) {
         const files = evt.target.files
         if (!files) return
 
         this.setState({
             ...this.state,
-            file: files[0]
+            file: Buffer.from(await files[0].arrayBuffer())
         })
     }
 
@@ -164,7 +176,7 @@ export class CollectionImages extends Component<any> {
         const { id, title, description } = this.state.image
         const { id: collectionId } = this.state.collection
         const iReq: ImageRequest = { title, description }
-        const token: string = new Auth().getToken()
+        const token: string = getToken()
 
         let result: boolean = false
         if (id) {
