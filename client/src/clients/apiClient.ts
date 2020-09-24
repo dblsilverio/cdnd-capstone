@@ -108,7 +108,7 @@ export async function createImage(image: ImageRequest, collectionId: string, tok
         headers: await _headers(token)
     })
 
-    if (result.status === 200) {
+    if (result.status === 201) {
         return true
     }
 

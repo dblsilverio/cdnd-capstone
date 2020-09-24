@@ -22,7 +22,7 @@ export const handler: middy.Middy<APIGatewayProxyEvent, APIGatewayProxyResult> =
         const resp: CreateImageResponse = await createImage(imageRequest, collectionId, userId)
 
         return {
-            statusCode: 200,
+            statusCode: 201,
             body: JSON.stringify({
                 ...resp
             })
