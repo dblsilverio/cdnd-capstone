@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import { CollectionsState } from '../types/states'
 import { getToken } from '../utils/auth'
 
-export class Collections extends Component<CollectionsState> {
+export class Collections extends Component<{}, CollectionsState> {
 
     state = {
         collections: [],
@@ -20,8 +20,11 @@ export class Collections extends Component<CollectionsState> {
             id: '',
             name: '',
             category: 'BOOKS',
-            description: ''
-        }
+            description: '',
+            createdAt: '',
+            userId: ''
+        },
+        persisting: false
     }
 
     async _loadCollections() {
@@ -59,9 +62,12 @@ export class Collections extends Component<CollectionsState> {
                 editing: false,
                 newCollection: true,
                 collection: {
+                    id: '',
                     name: '',
                     category: 'BOOKS',
-                    description: ''
+                    description: '',
+                    createdAt: '',
+                    userId: ''
                 }
             })
         }
@@ -98,6 +104,11 @@ export class Collections extends Component<CollectionsState> {
         const cReq: CollectionRequest = { name, category, description }
         const token: string = getToken()
 
+        this.setState({
+            ...this.state,
+            persisting: true
+        })
+
         let result: boolean = false
         if (id) {
             result = await updateCollection(id, cReq, token)
@@ -113,6 +124,10 @@ export class Collections extends Component<CollectionsState> {
         }
 
         await this._loadCollections()
+        this.setState({
+            ...this.state,
+            persisting: false
+        })
         this._create(null)
 
     }
@@ -190,9 +205,26 @@ export class Collections extends Component<CollectionsState> {
                         <Button variant="secondary" onClick={() => this._create(null)}>
                             Close
               </Button>
-                        <Button variant="primary" onClick={() => this._save()}>
-                            {this.state.newCollection ? 'Save' : 'Update'}
-                        </Button>
+                        {
+                            this.state.persisting ?
+                                (
+                                    <Button variant="primary" disabled>
+                                        <Spinner
+                                            as="span"
+                                            animation="grow"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                    {this.state.newCollection ? 'Saving...' : 'Updating...'}
+                                    </Button>
+                                ) :
+                                (
+                                    <Button variant="primary" onClick={() => this._save()}>
+                                        {this.state.newCollection ? 'Save' : 'Update'}
+                                    </Button>
+                                )
+                        }
                     </Modal.Footer>
                 </Modal>
             </>

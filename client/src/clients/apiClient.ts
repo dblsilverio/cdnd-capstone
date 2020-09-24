@@ -89,7 +89,7 @@ export async function deleteImage(collectionId: string, imageId: string, token: 
         headers: await _headers(token)
     })
 
-    if (result.status !== 204) {
+    if (result.status === 204) {
         return true
     }
 

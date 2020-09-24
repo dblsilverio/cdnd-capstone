@@ -10,7 +10,8 @@ export interface CollectionsImagesState {
     loading: boolean
     upload: boolean
     uploading: boolean
-    file: Buffer | null
+    file: Buffer | null,
+    persisting: boolean
 }
 
 export interface CollectionsImagesProps {
@@ -26,7 +27,8 @@ export interface CollectionsState {
     loading: boolean,
     editing: boolean,
     newCollection: boolean,
-    collection: ImageCollection
+    collection: ImageCollection,
+    persisting: boolean
 }
 
 export interface WSImageProcessorProps {

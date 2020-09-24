@@ -33,7 +33,8 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
         loading: true,
         upload: false,
         uploading: false,
-        file: null
+        file: null,
+        persisting: false
     }
 
     async _loadImages() {
@@ -178,6 +179,11 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
         const iReq: ImageRequest = { title, description }
         const token: string = getToken()
 
+        this.setState({
+            ...this.state,
+            persisting: true
+        })
+
         let result: boolean = false
         if (id) {
             result = await updateImage(id, collectionId, iReq, token)
@@ -192,6 +198,10 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
         }
 
         await this._loadImages()
+        this.setState({
+            ...this.state,
+            persisting: false
+        })
         this._create(null)
 
     }
@@ -220,10 +230,10 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
                                         <Row style={{ marginBottom: '25px' }} key={item.id}>
                                             <Col md="5">
                                                 {
-                                                    item.hasImage ? 
-                                                    (<Image src={item.filename} fluid thumbnail />)
-                                                    :
-                                                    (<div style={{textAlign: 'center'}}>No Image Uploaded Yet</div>)
+                                                    item.hasImage ?
+                                                        (<Image src={item.filename} fluid thumbnail />)
+                                                        :
+                                                        (<div style={{ textAlign: 'center' }}>No Image Uploaded Yet</div>)
                                                 }
                                             </Col>
                                             <Col md="7">
@@ -272,9 +282,26 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
                         <Button variant="secondary" onClick={() => this._create(null)}>
                             Close
               </Button>
-                        <Button variant="primary" onClick={() => this._save()}>
-                            {this.state.newImage ? 'Save' : 'Update'}
-                        </Button>
+                        {
+                            this.state.persisting ?
+                                (
+                                    <Button variant="primary" disabled>
+                                        <Spinner
+                                            as="span"
+                                            animation="grow"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                        {this.state.newImage ? 'Saving...' : 'Updating...'}
+                                    </Button>
+                                ) :
+                                (
+                                    <Button variant="primary" onClick={() => this._save()}>
+                                        {this.state.newImage ? 'Save' : 'Update'}
+                                    </Button>
+                                )
+                        }
                     </Modal.Footer>
                 </Modal>
 
