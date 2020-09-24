@@ -56,7 +56,12 @@ $ sls deploy -v
 
 #### Frontend
 
-Run `client` project as is to point to the actual deployed project. 
+Run `client` project as is to point to the actual deployed project:
+
+```shell
+$ cd client/
+$ yarn start
+```
 
 In case of a fresh / new serverless environment, change the configuration file to point to your new APIs IDS and Auth0 configuration:
 
