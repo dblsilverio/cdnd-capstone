@@ -1,7 +1,7 @@
 service: image-reader
 
 package:
-  individually: true
+  individually: false
 
 provider:
   name: aws
@@ -196,6 +196,10 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}/index/${self:provider.environment.IMAGES_COLLECTION_INDEX_NAME}
 
   createImage:
     handler: src/lambda/http/images/create.handler
@@ -220,6 +224,53 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
+
+  signedUrl:
+    handler: src/lambda/http/images/signedUrl.handler
+    events:
+      - http:
+          method: post
+          path: collections/{collectionId}/images/{imageId}/signedUrl
+          cors: true
+          authorizer: Auth0
+          documentation:
+            summary: Create a new signed url
+            description: Create a new signed url for image upload
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET_NAME}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
+  
+  updateImage:
+    handler: src/lambda/http/images/update.handler
+    events:
+      - http:
+          method: put
+          path: collections/{collectionId}/images/{imageId}
+          cors: true
+          authorizer: Auth0
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update image
+            description: Upload image with new title and description provided by the user
+            requestModels:
+              "application/json": ImageRequest
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}
       - Effect: Allow
         Action:

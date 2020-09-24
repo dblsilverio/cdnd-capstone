@@ -42,6 +42,20 @@ export class ImageDynamo implements ImageRepository {
 
     }
 
+    async update(image: Image): Promise<void> {
+        const { id, collectionId, title, description } = image
+
+        await this.docClient.update({
+            TableName: this.tableName,
+            Key: { id, collectionId },
+            UpdateExpression: 'set title = :title, description = :description',
+            ExpressionAttributeValues: {
+                ':title': title,
+                ':description': description
+            }
+        }).promise()
+    }
+
     async list(collectionId: string): Promise<Image[]> {
         const result: QueryOutput = await this.docClient.query({
             TableName: this.tableName,

@@ -21,8 +21,8 @@ export async function findImageById(imageId: string): Promise<Image> {
 }
 
 export async function createImage(iReq: ImageRequest, collectionId: string, userId: string): Promise<CreateImageResponse> {
-    
-    logger.info(`User ${userId} is attempting to create/upload new image: ${iReq.title}`)
+
+    logger.info(`User ${userId} is attempting to create new image: ${iReq.title}`)
 
     await collectionRepo.checkOwner(userId, collectionId)
 
@@ -37,9 +37,33 @@ export async function createImage(iReq: ImageRequest, collectionId: string, user
     }
 
     const image = await repo.create(newImage)
-    const signedUrl = repoS3.signedUrl(id)
 
-    return { image, signedUrl };
+    return { image };
+}
+
+export async function createSignedUrl(imageId: string, collectionId: string, userId: string): Promise<string> {
+
+    logger.info(`User ${userId} is generating signed url for image ${imageId}`)
+
+    await collectionRepo.checkOwner(userId, collectionId)
+
+    return repoS3.signedUrl(imageId)
+}
+
+export async function updateImage(id: string, collectionId: string, userId: string, iReq: ImageRequest): Promise<void> {
+    logger.debug(`User ${userId} is attempting to update image: ${id}`)
+
+    await collectionRepo.checkOwner(userId, collectionId)
+
+    const image: Image = {
+        ...iReq,
+        id,
+        filename: '',
+        createdAt: '',
+        collectionId: collectionId
+    }
+
+    await repo.update(image)
 }
 
 export async function deleteImage(imageId: string, collectionId: string, userId: string): Promise<void> {

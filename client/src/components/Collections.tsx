@@ -51,7 +51,7 @@ export class Collections extends Component<any> {
                 editing: true,
                 newCollection: true
             })
-        }else {
+        } else {
             this.setState({
                 ...this.state,
                 editing: false,
@@ -77,19 +77,21 @@ export class Collections extends Component<any> {
         })
     }
 
-    async _delCollection(collection: ImageCollection): Promise<boolean> {
+    async _delCollection(collection: ImageCollection) {
         const confirm: boolean = window.confirm(`Confirm deleting collection '${collection.name}'?`)
 
         if (confirm) {
-            await deleteCollection(collection.id, new Auth().getToken())
-
-            return true
+            if (await deleteCollection(collection.id, new Auth().getToken())) {
+                await this._loadCollections()
+                toast.success(`Collection deleted`)
+            } else {
+                toast.error(`Error deleting collection`)
+            }
         }
 
-        return false
     }
 
-    async _save(c: ImageCollection) {
+    async _save() {
         const { id, name, category, description } = this.state.collection
         const cReq: CollectionRequest = { name, category, description }
         const token: string = new Auth().getToken()
@@ -186,7 +188,7 @@ export class Collections extends Component<any> {
                         <Button variant="secondary" onClick={() => this._create(null)}>
                             Close
               </Button>
-                        <Button variant="primary" onClick={() => this._save(this.state.collection)}>
+                        <Button variant="primary" onClick={() => this._save()}>
                             {this.state.newCollection ? 'Save' : 'Update'}
                         </Button>
                     </Modal.Footer>
