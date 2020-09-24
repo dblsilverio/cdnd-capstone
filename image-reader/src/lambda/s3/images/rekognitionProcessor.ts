@@ -2,7 +2,7 @@ import { S3EventRecord, SNSEvent, SNSHandler } from "aws-lambda";
 import { S3Object } from "aws-sdk/clients/rekognition";
 import { Logger } from "winston";
 import { Image } from "../../../models/image";
-import { findCollectionOwnerByImage, findImageById, getBucket, putDetectedText } from "../../../services/ImageService";
+import { findCollectionOwnerByImage, findImageById, getBucket, imageUploaded, putDetectedText } from "../../../services/ImageService";
 import { putCountMetric } from "../../../services/metricService";
 import { detectText } from "../../../services/rekognitionService";
 import { userConnections } from "../../../services/usersConnectionService";
@@ -32,6 +32,8 @@ async function processImage(s3Record: S3EventRecord): Promise<void> {
         Bucket: getBucket(),
         Name: key
     }
+
+    await imageUploaded(key)
 
     logger.info(`Running rekognition services for image ${key}`)
 

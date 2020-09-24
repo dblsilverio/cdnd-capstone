@@ -32,6 +32,7 @@ export async function createImage(iReq: ImageRequest, collectionId: string, user
         ...iReq,
         id,
         collectionId,
+        hasImage: false,
         filename: completeImageUrl(id),
         createdAt: new Date().toISOString()
     }
@@ -58,6 +59,7 @@ export async function updateImage(id: string, collectionId: string, userId: stri
     const image: Image = {
         ...iReq,
         id,
+        hasImage: false,
         filename: '',
         createdAt: '',
         collectionId: collectionId
@@ -86,6 +88,12 @@ export async function listCollectionImages(collectionId: string, userId: string)
 export async function findCollectionOwnerByImage(imageId: string): Promise<string> {
     const collectionId: string = (await repo.get(imageId)).collectionId
     return await collectionRepo.getOwner(collectionId)
+}
+
+export async function imageUploaded(imageId: string): Promise<void> {
+    logger.info(`Image  binary uploadad for image Id ${imageId}`)
+
+    await repo.imageUploaded(imageId)
 }
 
 export async function putDetectedText(imageId: string, detectedText: string): Promise<void> {

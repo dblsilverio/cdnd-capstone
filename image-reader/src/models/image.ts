@@ -4,6 +4,7 @@ export interface Image {
     description?: string
     filename: string
     textContent?: string
+    hasImage: boolean
     createdAt: string
     collectionId: string
 }

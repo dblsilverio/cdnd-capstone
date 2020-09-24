@@ -219,7 +219,12 @@ export class CollectionImages extends Component<CollectionsImagesProps, Collecti
                                     (
                                         <Row style={{ marginBottom: '25px' }} key={item.id}>
                                             <Col md="5">
-                                                <Image src={item.filename} fluid thumbnail />
+                                                {
+                                                    item.hasImage ? 
+                                                    (<Image src={item.filename} fluid thumbnail />)
+                                                    :
+                                                    (<div style={{textAlign: 'center'}}>No Image Uploaded Yet</div>)
+                                                }
                                             </Col>
                                             <Col md="7">
                                                 <div>

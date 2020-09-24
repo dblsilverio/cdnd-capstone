@@ -2,6 +2,7 @@ import { Image } from "../models/image";
 
 export interface ImageRepository {
     create(i: Image): Promise<Image>
+    imageUploaded(id: string): Promise<void>
     get(imageId: string): Promise<Image>
     update(i: Image): Promise<void>
     detectedText(imageId: string, text: string): Promise<void>
