@@ -80,7 +80,7 @@ functions:
       JWKS_URL: https://dev-hkcdhb4r.us.auth0.com/.well-known/jwks.json
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  createImageCollection:
+  CreateImageCollection:
     handler: src/lambda/http/collections/create.handler
     events:
       - http:
@@ -147,7 +147,7 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.USER_INDEX_NAME}
 
-  updateImageCollection:
+  UpdateImageCollection:
     handler: src/lambda/http/collections/update.handler
     events:
       - http:
@@ -173,7 +173,7 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
 
-  deleteImageCollection:
+  DeleteImageCollection:
     handler: src/lambda/http/collections/delete.handler
     events:
       - http:
@@ -206,7 +206,7 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}/index/${self:provider.environment.IMAGES_COLLECTION_INDEX_NAME}
 
-  createImage:
+  CreateImage:
     handler: src/lambda/http/images/create.handler
     events:
       - http:
@@ -257,7 +257,7 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COLLECTION_TABLE_NAME}/index/${self:provider.environment.COLLECTION_ID_INDEX_NAME}
   
-  updateImage:
+  UpdateImage:
     handler: src/lambda/http/images/update.handler
     events:
       - http:
@@ -326,7 +326,7 @@ functions:
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE_NAME}
 
-  rekognitionProcessor:
+  RekognitionProcessor:
     environment:
       STAGE: ${self:provider.stage}
       API_ID:
