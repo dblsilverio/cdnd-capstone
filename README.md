@@ -79,3 +79,9 @@ export const authConfig = {
   callbackUrl: 'YOUR_ROOT_CALLBACK_URL'
 }
 ```
+
+#### Postman Scripts
+
+Check postman scripts / environment  or the Image Reader API.
+
+Token can be obtained from localStorage.

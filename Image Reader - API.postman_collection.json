@@ -1,0 +1,1024 @@
+{
+	"info": {
+		"_postman_id": "625c71b3-3e0b-4274-8245-e5410d6be83c",
+		"name": "Image Reader - API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Collections",
+			"item": [
+				{
+					"name": "Authorized",
+					"item": [
+						{
+							"name": "List User Collection",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fb600a0e-7949-44bb-b78b-33283dd94c46",
+										"exec": [
+											"pm.test(\"Status code is 200 / 204 \", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,204]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Single Collection",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "336dbf91-2007-4728-bf74-0611694b200d",
+										"exec": [
+											"pm.test(\"Status code is 200 \", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "0fe73fb3-1157-440c-acc0-d414d6e02740",
+											"description": "User's collection id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Collection",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c88b80a3-d937-4757-845b-21e8507a5273",
+										"exec": [
+											"pm.test(\"Status code is 204 \", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([204]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Books Covers and Etc\",\n    \"description\": \"Public signs, outdoors and etc\",\n    \"category\": \"BOOKS\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "0fe73fb3-1157-440c-acc0-d414d6e02740",
+											"description": "User's collection"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Collection",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9e5836cf-e6a6-47aa-a8dd-6c5e90757ff4",
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+											"});",
+											"",
+											"pm.test(\"Collection returned\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.not.eql(null);",
+											"    pm.expect(jsonData.userId).to.not.eql(null);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Public Signs\",\n    \"description\": \"Public signs, outdoors and etc\",\n    \"category\": \"OTHERS\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Collection",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9794f581-86e9-4fbc-8681-cb69432045f4",
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([204]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "ac03ac58-3f83-424b-ac9e-3b48dac84ae3",
+											"description": "Users collectionId"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Single Collection - Not Found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3f7bf744-6235-4230-af3c-5aed07e532fe",
+										"exec": [
+											"pm.test(\"Status code is 404 - Not Found\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "wwwwwwwww-aaaa-ssssss-ddddddddddd",
+											"description": "Random and inexistent id"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Unauthorized",
+					"item": [
+						{
+							"name": "List User Collection - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6ad35391-2159-4b21-9aee-47bc81c138e8",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Single Collection - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "dde97de6-cdfa-4650-9e03-a652c935d38a",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "8f2383da-f13b-4d2c-b4d0-e8cc135c04a4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Collection - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "703c577d-7740-4627-92c3-46ce88b8d1ce",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Public Signs\",\n    \"description\": \"Public signs, outdoors and etc\",\n    \"category\": \"OTHERS\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Collection - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "06705964-68a6-45cb-acac-0cc022f197cd",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Public Signs - Trips\",\n    \"description\": \"Public signs, outdoors and etc\",\n    \"category\": \"OTHERS\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "8f2383da-f13b-4d2c-b4d0-e8cc135c04a4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Collection - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "01139c20-521b-469a-949e-1925781beff7",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "8f2383da-f13b-4d2c-b4d0-e8cc135c04a4"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Unauthorized",
+					"item": [
+						{
+							"name": "Create Image - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "93bbdf60-8ea4-48d4-913d-98225107531b",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Green sign\",\n    \"description\": \"Green sign with arrows on the street\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/d5b588fc-bfce-4aa6-9f31-35a06ebf502d/images",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										"d5b588fc-bfce-4aa6-9f31-35a06ebf502d",
+										"images"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Signed Url - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c768ea5c-1f71-48f1-8cb6-5db73e8c06f8",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Green sign\",\n    \"description\": \"Green sign with arrows on the street\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/7b28c5a2-bb10-40bf-8587-f9b575cd876b/images/1d9d4895-3d15-486c-a42e-36d33dbda05d/signedUrl",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										"7b28c5a2-bb10-40bf-8587-f9b575cd876b",
+										"images",
+										"1d9d4895-3d15-486c-a42e-36d33dbda05d",
+										"signedUrl"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Images By Collection - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "baeb1969-bcc6-4605-8914-5d30f41c0f8b",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/7b28c5a2-bb10-40bf-8587-f9b575cd876b/images",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										"7b28c5a2-bb10-40bf-8587-f9b575cd876b",
+										"images"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Image - Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "16285ef9-4316-4022-a0e0-5162050d3d18",
+										"exec": [
+											"pm.test(\"Status code is 401 - Unauthorized\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/98d3064e-308a-4b84-b30b-d4274b8944aa/images/26b97676-dbf2-499e-8530-7679243c419c",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										"98d3064e-308a-4b84-b30b-d4274b8944aa",
+										"images",
+										"26b97676-dbf2-499e-8530-7679243c419c"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Authorized",
+					"item": [
+						{
+							"name": "Create Image",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c53264ac-39ba-4a47-bdf9-b4f71864fdba",
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(pm.request.url.path[2]).to.eql(jsonData.image.collectionId);",
+											"    pm.expect(jsonData.image.id).to.not.eql(null);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Green sign\",\n    \"description\": \"Green sign with arrows on the street\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId/images",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId",
+										"images"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "0fe73fb3-1157-440c-acc0-d414d6e02740",
+											"description": "Users collectionId"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Signed Url",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4a05d954-ffc7-4eec-9e6d-af989be5896f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData.signedUrl).to.not.eql(null);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Green sign\",\n    \"description\": \"Green sign with arrows on the street\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId/images/:imageId/signedUrl",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId",
+										"images",
+										":imageId",
+										"signedUrl"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "0fe73fb3-1157-440c-acc0-d414d6e02740"
+										},
+										{
+											"key": "imageId",
+											"value": "3cc8061b-d021-4512-878e-b639550c00cf"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Images By Collection",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c2464b14-c19e-4e30-ba82-9cebe67855fa",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId/images",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId",
+										"images"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "0fe73fb3-1157-440c-acc0-d414d6e02740",
+											"description": "User's collection id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Image",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "114ece45-983d-418e-9c4e-b30c44391205",
+										"exec": [
+											"pm.test(\"Status code is 204 \", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([204]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://{{HOST}}/{{ENV}}/collections/:collectionId/images/:imageId",
+									"protocol": "http",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"{{ENV}}",
+										"collections",
+										":collectionId",
+										"images",
+										":imageId"
+									],
+									"variable": [
+										{
+											"key": "collectionId",
+											"value": "0fe73fb3-1157-440c-acc0-d414d6e02740"
+										},
+										{
+											"key": "imageId",
+											"value": "b9befabf-ffe2-441a-8dcc-3248a9c992da"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload Image",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cad03359-09bf-4d4c-ad6f-ed63e7f89672",
+										"exec": [
+											"pm.test(\"Status code is 200 \", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "/home/diogo/Desktop/ImageReader/books/bookcovers.jpg"
+									},
+									"options": {
+										"file": {}
+									}
+								},
+								"url": {
+									"raw": "https://udacity-cdnd-capstone-image-reader-dev.s3.amazonaws.com/3cc8061b-d021-4512-878e-b639550c00cf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA47WW77VISRESXKUN%2F20200924%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200924T195028Z&X-Amz-Expires=180&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIDlYSRBjyTh2uX09E%2F6J7DkCFfuvWXPFqzYeU5XXJQj%2FAiEArHzz6dnwFLLqE%2BYA1vCcGMQVWu44zSfa6SnMiXxn%2B60q4gEIxf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw4OTI3MzAzNDI3MzciDCRrv3Vceu6HY6W1USq2AQ4o1RmsjZtoBTcNaTBKf2rDYed%2BwE0MscrnY%2FcO3VL%2FIKmVft%2FiPVPxfVBonW25BcpK%2BvO3or2FSJrGolmJGFP%2F%2B%2BePTRCBT5ZOMjt6ftQ07BxluPO4yZOf%2FnnhsAqaqJyhToAAvIK%2Bm1ay3pccAlRIAOL5BY%2BPFQxhoSbTr%2FfZJNYJBixnMWR4gLjcV%2Bv2dKpaDNpPrrzjAH7lV0Xo4%2BAN4i37tebnuNOoZnTLrpLOod9bf43KMILxs%2FsFOuAB4CWH2KqtSWe3YcLbR9f1Cu1SGYoXA1tNcztJH3xEEqvmax1LynbEz0rcWnn75QpFc5jFAhN94OPGhrG%2F%2Bv3VuJDM%2BMNi2BtXh01kP1LTwdsyTKbrZ9Ha6BG3BHvys9ZONazDYvQ1FqVsxRZzAgQe0Hvaorr%2FRGr0MywLHZ8j4gKMmniCktuI0EtfqJ%2FcaJbVubhq72Qy3IO%2BmQCsB%2FEpePNmq43rQ%2FdpxqRDuAcHPlUZolx3s5qwfYTiFcC%2Bd06FCdR9fz%2BrqaLl8jUvo6%2FvuF7jxmdo0S4xgfWsmZkgnYs%3D&X-Amz-Signature=2ef07731ea700ac3f17b22cc81938dfa0be964a3056075cf978cbe350cc236d3&X-Amz-SignedHeaders=host",
+									"protocol": "https",
+									"host": [
+										"udacity-cdnd-capstone-image-reader-dev",
+										"s3",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"3cc8061b-d021-4512-878e-b639550c00cf"
+									],
+									"query": [
+										{
+											"key": "X-Amz-Algorithm",
+											"value": "AWS4-HMAC-SHA256"
+										},
+										{
+											"key": "X-Amz-Credential",
+											"value": "ASIA47WW77VISRESXKUN%2F20200924%2Fus-east-1%2Fs3%2Faws4_request"
+										},
+										{
+											"key": "X-Amz-Date",
+											"value": "20200924T195028Z"
+										},
+										{
+											"key": "X-Amz-Expires",
+											"value": "180"
+										},
+										{
+											"key": "X-Amz-Security-Token",
+											"value": "IQoJb3JpZ2luX2VjEKz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIDlYSRBjyTh2uX09E%2F6J7DkCFfuvWXPFqzYeU5XXJQj%2FAiEArHzz6dnwFLLqE%2BYA1vCcGMQVWu44zSfa6SnMiXxn%2B60q4gEIxf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw4OTI3MzAzNDI3MzciDCRrv3Vceu6HY6W1USq2AQ4o1RmsjZtoBTcNaTBKf2rDYed%2BwE0MscrnY%2FcO3VL%2FIKmVft%2FiPVPxfVBonW25BcpK%2BvO3or2FSJrGolmJGFP%2F%2B%2BePTRCBT5ZOMjt6ftQ07BxluPO4yZOf%2FnnhsAqaqJyhToAAvIK%2Bm1ay3pccAlRIAOL5BY%2BPFQxhoSbTr%2FfZJNYJBixnMWR4gLjcV%2Bv2dKpaDNpPrrzjAH7lV0Xo4%2BAN4i37tebnuNOoZnTLrpLOod9bf43KMILxs%2FsFOuAB4CWH2KqtSWe3YcLbR9f1Cu1SGYoXA1tNcztJH3xEEqvmax1LynbEz0rcWnn75QpFc5jFAhN94OPGhrG%2F%2Bv3VuJDM%2BMNi2BtXh01kP1LTwdsyTKbrZ9Ha6BG3BHvys9ZONazDYvQ1FqVsxRZzAgQe0Hvaorr%2FRGr0MywLHZ8j4gKMmniCktuI0EtfqJ%2FcaJbVubhq72Qy3IO%2BmQCsB%2FEpePNmq43rQ%2FdpxqRDuAcHPlUZolx3s5qwfYTiFcC%2Bd06FCdR9fz%2BrqaLl8jUvo6%2FvuF7jxmdo0S4xgfWsmZkgnYs%3D"
+										},
+										{
+											"key": "X-Amz-Signature",
+											"value": "2ef07731ea700ac3f17b22cc81938dfa0be964a3056075cf978cbe350cc236d3"
+										},
+										{
+											"key": "X-Amz-SignedHeaders",
+											"value": "host"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "430667c8-ec53-4240-b3a7-62ed8f359f5d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7ff6123c-b2e7-40f4-a1f8-2d0a321f1cf3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

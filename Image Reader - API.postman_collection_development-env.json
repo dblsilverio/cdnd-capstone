@@ -1,0 +1,24 @@
+{
+	"id": "36bf6c27-a85d-450d-938b-571cf460b97d",
+	"name": "Development",
+	"values": [
+		{
+			"key": "HOST",
+			"value": "scos6mw8pc.execute-api.us-east-1.amazonaws.com",
+			"enabled": true
+		},
+		{
+			"key": "ENV",
+			"value": "dev",
+			"enabled": true
+		},
+		{
+			"key": "TOKEN",
+			"value": "Get token from localStorage",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-09-24T19:58:27.129Z",
+	"_postman_exported_using": "Postman/7.33.1"
+}
