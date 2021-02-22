@@ -7,7 +7,7 @@ This project was developed in fulfillment of Cloud Developer Nanodegree Capstone
 This project consists of a serverless backend and frontend that allows users to create and manage image collections. It also has an extra feature of text detection by Amazon Rekognition services.
 
 ### Demo
-[![Image Reader Demo](https://i9.ytimg.com/vi/alo1_R846yw/mq3.jpg?sqp=CNDGs_sF&rs=AOn4CLDzEPA9gzSlR1PsQm8P_MlcP7arNg)](https://youtu.be/alo1_R846yw "Image Reader Demo")
+[![Image Reader Demo](dashboard.png)](https://youtu.be/alo1_R846yw "Image Reader Demo")
 
 ### Stack
 
